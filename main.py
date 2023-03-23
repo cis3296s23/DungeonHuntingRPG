@@ -1,0 +1,3 @@
+# Starting the Discord bot
+
+
