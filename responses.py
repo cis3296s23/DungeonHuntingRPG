@@ -12,3 +12,6 @@ def get_response(message) -> str:
 
     if p_message == '!help':
         return "`Available commands: hello, roll.`"  # This is a Markdown code block
+    
+    if p_message == 'test':
+        return 'test completed'
