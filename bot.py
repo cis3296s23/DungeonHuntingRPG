@@ -16,6 +16,7 @@ async def send_message(message, user_message, is_private):
 
 
 ranks = {
+    
     'F': 0,
     'D': 1,
     'C': 3,
@@ -37,7 +38,7 @@ users = {
 
 
 def run_discord_bot():
-    TOKEN = ''
+    TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GFtVoV.dIdBoZtJoHtvkp3RitdxODc0CYTgJxnxTs5H3A'   
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)
