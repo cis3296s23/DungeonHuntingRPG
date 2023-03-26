@@ -1,28 +1,18 @@
-# Project Name
-Put here a short paragraph describing your project. 
-Adding an screenshot or a mockup of your application in action would be nice.  
-
-![This is a screenshot.](images.png)
+# Dungeon Hunting RPG
+Dungeon Hunting RPG is an application that runs as a discord bot that allows users to play a dungeon hunting minigame via discord. The bot sets up 
+enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players
+interact with the bot with commands to decide what actions they want to take. 
 # How to run
-Provide here instructions on how to use your application.   
-- Download the latest binary from the Release section on the right on GitHub.  
-- On the command line uncompress using
+ - Create discord server, then create a discord bot token
+ - Clone the repository into local machine 
+ - Enter the discord bot token into '' as shown below
 ```
-tar -xzf  
+ def run_discord_bot():
+    TOKEN = ''
 ```
-- On the command line run with
+- Install discord API
+- Go to terminal, and enter below
 ```
-./hello
+pip install discord.py 
 ```
-- You will see Hello World! on your terminal. 
-
-# How to contribute
-Follow this project board to know the latest status of the project: [http://...]([http://...])  
-
-### How to build
-- Use this github repository: ... 
-- Specify what branch to use for a more stable release or for cutting edge development.  
-- Use InteliJ 11
-- Specify additional library to download if needed 
-- What file and target to compile and run. 
-- What is expected to happen when the app start. 
+-  Run main.py, and the discord bot should run in the server.
