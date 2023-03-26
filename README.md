@@ -15,4 +15,5 @@ interact with the bot with commands to decide what actions they want to take.
 ```
 pip install discord.py 
 ```
--  Run main.py, and the discord bot should run in the server.
+-  Run main.py, and the discord bot should run in the server
+-  CAUTION: remember to erase the token from TOKEN = ' ' before committing, not doing so will require you to create a new discord bot token
