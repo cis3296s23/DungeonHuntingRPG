@@ -5,7 +5,7 @@ interact with the bot with commands to decide what actions they want to take.
 # How to run
  - Download the latest [release](https://github.com/cis3296s23/DungeonHuntingRPG/releases)
  - Move files into the directory of the project
- - Setup Discord bot as shown in [Technical Information](https://github.com/cis3296s23/DungeonHuntingRPG/edit/main/README.md#technical-information)
+ - Setup Discord bot as shown in [Technical Information](technical-information)
  - In bot.py, enter the discord bot token into the section shown below
 ```
  def run_discord_bot():
