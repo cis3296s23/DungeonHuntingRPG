@@ -4,7 +4,7 @@ enemies for the players to fight, dungeons to explore, checking of current adven
 interact with the bot with commands to decide what actions they want to take. 
 # How to run
  - Download the latest [release](https://github.com/cis3296s23/DungeonHuntingRPG/releases)
- - Move files into the directory of the project
+ - Open the code in an IDE and move files into the directory of the project
  - Setup Discord bot as shown in [Technical Information](#technical-information)
  - In bot.py, enter the discord bot token into the section shown below
 ```
@@ -17,7 +17,7 @@ interact with the bot with commands to decide what actions they want to take.
 pip install discord.py 
 ```
 -  Run main.py, and the discord bot should run in the server
--  **CAUTION**: remember to erase the token from TOKEN = ' ' before committing, not doing so will require you to create a new discord bot token
+-  **CAUTION TO DEVELOPERS**: remember to erase the token from TOKEN = 'erase token here' before releasing any changes to public, not doing so will require you to create a new discord bot token
 
 # Technical Information 
 
