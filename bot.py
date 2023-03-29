@@ -4,6 +4,9 @@ import discord
 import responses
 
 
+
+
+
 async def send_message(message, user_message, is_private):
     try:  # Try to send a message
         response = responses.get_response(user_message)  # Get the response from the user's message
@@ -38,7 +41,7 @@ users = {
 
 
 def run_discord_bot():
-    TOKEN = ''   
+    TOKEN = BOT_TOKEN  
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)
@@ -46,6 +49,11 @@ def run_discord_bot():
     @client.event
     async def on_ready():
         print(f'{client.user} has connected to Discord!')
+        channel = client.get_channel(CHANNEL_ID)
+        
+        await channel.send("Welcome to the Dungeon Hunting RPG! Dungeon Hunting sets up enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players interact with the bot with commands to decide what actions they want to take.\n")
+        await channel.send('Enter \'!help\' for actions.\n')
+        
 
     @client.event
     async def on_message(message):
@@ -55,6 +63,8 @@ def run_discord_bot():
         username = str(message.author)
         user_message = str(message.content)
         channel = str(message.channel)
+
+        
 
         print(f'{username} sent a message in {channel}: {user_message}')
 
@@ -67,6 +77,14 @@ def run_discord_bot():
         # Check Rank
         if user_message == '!rank':
             await message.channel.send(f'Your rank is {users[username]["rank"]}')
+
+        # Check stats
+        if user_message == '!stat':
+            #embed = discord.Embed(COLOR=discord.Color.from_rgb(247, 38, 42),title= username+'\'s stats', description=f'Your rank is {users[username]["rank"]}')
+            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42),title=username+'\'s stats\n',description= f'Wins: {users[username]["wins"]} \t Rank: {users[username]["wins"]} ')
+
+            #await message.channel.send(f'Your rank is {users[username]["rank"]}')            
+            await message.channel.send(embed=embed)            
 
         # Check Wins
         if user_message == '!wins':

@@ -18,3 +18,4 @@ def get_response(message) -> str:
     
     if p_message == 'test2':
         return 'Here is test2!'
+    
