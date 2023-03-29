@@ -4,7 +4,8 @@ import discord
 import responses
 
 
-
+CHANNEL_ID = 1075850854126583900
+BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GBnk0G.YKCEb1Ue-HVomdjUWr9KMs9ASfHlCdT7C2Nz00'
 
 
 async def send_message(message, user_message, is_private):
@@ -81,7 +82,9 @@ def run_discord_bot():
         # Check stats
         if user_message == '!stat':
             #embed = discord.Embed(COLOR=discord.Color.from_rgb(247, 38, 42),title= username+'\'s stats', description=f'Your rank is {users[username]["rank"]}')
-            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42),title=username+'\'s stats\n',description= f'Wins: {users[username]["wins"]} \t Rank: {users[username]["wins"]} ')
+            #embedstring = f'Your rank is {users[username]["rank"]}'
+            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42),title=username+'\'s stats\n',description= f'Rank: {users[username]["rank"]}\t' + 
+                                  f'Wins: {users[username]["wins"]}\n' )
 
             #await message.channel.send(f'Your rank is {users[username]["rank"]}')            
             await message.channel.send(embed=embed)            
