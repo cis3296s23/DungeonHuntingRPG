@@ -3,9 +3,8 @@ import random
 import discord
 import responses
 
-
 CHANNEL_ID = 1075850854126583900
-BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GBnk0G.YKCEb1Ue-HVomdjUWr9KMs9ASfHlCdT7C2Nz00' #remove before committing 
+BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.Geg6ct.DoPNsUuX6qVu0lx0vxuS5mRPvukFv13zA4a5IA'  # remove before committing
 
 
 async def send_message(message, user_message, is_private):
@@ -20,7 +19,7 @@ async def send_message(message, user_message, is_private):
 
 
 ranks = {
-    
+
     'F': 0,
     'D': 1,
     'C': 3,
@@ -42,7 +41,7 @@ users = {
 
 
 def run_discord_bot():
-    TOKEN = BOT_TOKEN  
+    TOKEN = BOT_TOKEN
     intents = discord.Intents.default()
     intents.message_content = True
     client = discord.Client(intents=intents)
@@ -51,10 +50,11 @@ def run_discord_bot():
     async def on_ready():
         print(f'{client.user} has connected to Discord!')
         channel = client.get_channel(CHANNEL_ID)
-        
-        await channel.send("Welcome to the Dungeon Hunting RPG! The Dungeon Hunting RPG sets up enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players interact with the bot with commands to decide what actions they want to take.\n")
-        await channel.send('To start your adventure, enter \'!fight\'.\nEnter \'!help\' for the list of actions you can take.\n')
-        
+
+        await channel.send(
+            "Welcome to the Dungeon Hunting RPG! The Dungeon Hunting RPG sets up enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players interact with the bot with commands to decide what actions they want to take.\n")
+        await channel.send(
+            'To start your adventure, enter \'!fight\'.\nEnter \'!help\' for the list of actions you can take.\n')
 
     @client.event
     async def on_message(message):
@@ -64,8 +64,6 @@ def run_discord_bot():
         username = str(message.author)
         user_message = str(message.content)
         channel = str(message.channel)
-
-        
 
         print(f'{username} sent a message in {channel}: {user_message}')
 
@@ -77,16 +75,17 @@ def run_discord_bot():
 
         # Check Rank
         if user_message == '!rank':
-            await message.channel.send(f'Your rank is {users[username]["rank"]}')
+            embed = discord.Embed(title="Rank", description=f'Your rank is {users[username]["rank"]}', color=0x00ff00)
+            await message.channel.send(embed=embed)
 
         # Check stats
         if user_message == '!stat':
-            
-            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42),title=username+'\'s stats\n',description= f'Rank: {users[username]["rank"]}\n' +
-                                  f'Wins: {users[username]["wins"]}\n' )          
-            await message.channel.send(embed=embed)            
+            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42), title=username + '\'s stats\n',
+                                  description=f'Rank: {users[username]["rank"]}\n' +
+                                              f'Wins: {users[username]["wins"]}\n')
+            await message.channel.send(embed=embed)
 
-        # Check Wins
+            # Check Wins
         if user_message == '!wins':
             await message.channel.send(f'You have {users[username]["wins"]} wins')
 
@@ -109,11 +108,29 @@ def run_discord_bot():
             # Store the previous rank before the fight
             previous_rank = users[username]['rank']
 
+            # Create an embed to display the fight
+            embed = discord.Embed(title="Challenging Dungeon! :crossed_swords:", color=0x00FF9900)
+            embed.add_field(name="Player HP :heart:", value=player_hp, inline=True)
+            embed.add_field(name="Enemy HP :space_invader:", value=enemy_hp, inline=True)
+
+            # add image
+            embed.set_image(
+                url="https://static.wikia.nocookie.net/solo-leveling/images/e/e8/Centipede1.jpg/revision/latest/scale-to-width-down/350?cb=20210628033630")
+
+            # Send the embed
+            fight_message = await message.channel.send(embed=embed)
+
             while True:
                 # player's turn
                 player_damage = random.randint(1, player_attack)
                 enemy_hp -= player_damage
-                await message.channel.send(f'You hit the enemy for {player_damage} damage!')
+
+                # Update the embed
+                embed.set_field_at(0, name="Enemy HP :space_invader:", value=f"{enemy_hp}/100", inline=False)
+                embed.description = f'You dealt {player_damage} damage to the enemy!'
+
+                await fight_message.edit(embed=embed)
+
                 if enemy_hp <= 0:
                     await message.channel.send('You win!')
                     users[username]['wins'] += 1
@@ -132,7 +149,12 @@ def run_discord_bot():
                 # enemy's turn
                 enemy_damage = random.randint(1, enemy_attack)
                 player_hp -= enemy_damage
-                await message.channel.send(f'The enemy hit you for {enemy_damage} damage!')
+
+                # Update the embed
+                embed.set_field_at(1, name="Player HP :hearts:", value=f"{player_hp}/100", inline=False)
+                embed.description = f'The enemy dealt {enemy_damage} damage to you!'
+                await fight_message.edit(embed=embed)
+
                 if player_hp <= 0:
                     await message.channel.send('You lose!')
                     break
