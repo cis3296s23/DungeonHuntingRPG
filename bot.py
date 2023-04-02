@@ -5,7 +5,7 @@ import responses
 
 
 CHANNEL_ID = 1075850854126583900
-BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GBnk0G.YKCEb1Ue-HVomdjUWr9KMs9ASfHlCdT7C2Nz00'
+BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GBnk0G.YKCEb1Ue-HVomdjUWr9KMs9ASfHlCdT7C2Nz00' #remove before committing 
 
 
 async def send_message(message, user_message, is_private):
@@ -52,8 +52,8 @@ def run_discord_bot():
         print(f'{client.user} has connected to Discord!')
         channel = client.get_channel(CHANNEL_ID)
         
-        await channel.send("Welcome to the Dungeon Hunting RPG! Dungeon Hunting sets up enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players interact with the bot with commands to decide what actions they want to take.\n")
-        await channel.send('Enter \'!help\' for actions.\n')
+        await channel.send("Welcome to the Dungeon Hunting RPG! The Dungeon Hunting RPG sets up enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players interact with the bot with commands to decide what actions they want to take.\n")
+        await channel.send('To start your adventure, enter \'!fight\'.\nEnter \'!help\' for the list of actions you can take.\n')
         
 
     @client.event
@@ -81,12 +81,9 @@ def run_discord_bot():
 
         # Check stats
         if user_message == '!stat':
-            #embed = discord.Embed(COLOR=discord.Color.from_rgb(247, 38, 42),title= username+'\'s stats', description=f'Your rank is {users[username]["rank"]}')
-            #embedstring = f'Your rank is {users[username]["rank"]}'
-            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42),title=username+'\'s stats\n',description= f'Rank: {users[username]["rank"]}\t' + 
-                                  f'Wins: {users[username]["wins"]}\n' )
-
-            #await message.channel.send(f'Your rank is {users[username]["rank"]}')            
+            
+            embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42),title=username+'\'s stats\n',description= f'Rank: {users[username]["rank"]}\n' +
+                                  f'Wins: {users[username]["wins"]}\n' )          
             await message.channel.send(embed=embed)            
 
         # Check Wins
