@@ -4,7 +4,7 @@ import discord
 import responses
 
 CHANNEL_ID = 1075850854126583900
-BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.Geg6ct.DoPNsUuX6qVu0lx0vxuS5mRPvukFv13zA4a5IA'  # remove before committing
+BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GdVt6c.dp_JegTTdRX7FpDZjn-b0lMq_8lLV6c6E3WI7M'  # remove before committing
 
 
 async def send_message(message, user_message, is_private):
