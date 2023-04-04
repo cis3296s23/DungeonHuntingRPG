@@ -11,7 +11,12 @@ def get_response(message) -> str:
         return str(random.randint(1, 6))
 
     if p_message == '!help':
-        return "`Available commands: hello, roll.`"  # This is a Markdown code block
+        return """```Available commands:
+        !fight - to begin the battle!
+        !rank - to check your current rank
+        !win - to see how many wins you have
+        !stat - your current status
+        MORE TO COME!!!```"""  # This is a Markdown code block
     
   
     
