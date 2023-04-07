@@ -84,6 +84,15 @@ def run_discord_bot():
 
         print(f'{username} sent a message in {channel}: {user_message}')
 
+        if username not in users:
+            users[username] = {
+                'rank': 'F',
+                'wins': 0,
+                'gold':0,
+                'inventory': {}
+            }
+
+
         if user_message[0] == '?':  # If the message starts with a question mark
             user_message = user_message[1:]  # "?Help" -> "Help", i.e., ignores the question mark
             await send_message(message, user_message, is_private=True)
@@ -110,11 +119,18 @@ def run_discord_bot():
 
             temp = user_message
             num = int(temp) - 1
+            item = list(shop_items)
 
-            if(users[username]["gold"] >= shop_items.get(shop_items[num])   ): #checks if player have enough gold
-                users[username]['inventory'][shop_items[num]] += 1   #add shop item into player inventory 
-                users[username]["gold"] -= shop_items.get(shop_items[num])        #take gold from player
-                await message.channel.send( shop_items[num] + ' obtained!\n')        
+    
+            if( users[username]["gold"] >= shop_items[item[num]]   ): #checks if player have enough gold
+                if item[num] not in users[username]['inventory']:
+                    users[username]['inventory'][item[num]] = 1   #add shop item into player inventory 
+                else:
+                    users[username]['inventory'][item[num]] += 1
+
+                users[username]["gold"] -= shop_items[item[num]]        #take gold from player
+
+                await message.channel.send( item[num] + ' obtained!\n')        
             else:
                 await message.channel.send('Not enought gold!\n')
 
@@ -125,7 +141,7 @@ def run_discord_bot():
             if(bool(users[username]["inventory"]) != False): #check if inventory is full 
                 in_count = 0
                 for x,y in users[username]["inventory"].items():
-                    await message.channel.send(str(in_count +1) + ': '+ x + ' - '+ str(y))
+                    await message.channel.send(str(in_count +1) + ' = '+ x + ' : '+ str(y))
                     in_count+= 1    
             else:
                 await message.channel.send('Empty inventory. You can visit the shop to purchase items by using the \'!shop\' command.\n')
