@@ -19,13 +19,27 @@ async def send_message(message, user_message, is_private):
 
 
 ranks = {
+    'F': {'wins_required': 0, 'enemy': 'Centipede'},
+    'D': {'wins_required': 1, 'enemy': 'Stone Golem'},
+    'C': {'wins_required': 3, 'enemy': 'Knight'},
+    'B': {'wins_required': 4, 'enemy': 'Insect Queen'},
+    'A': {'wins_required': 10, 'enemy': 'Ant King'},
+    'S': {'wins_required': 15, 'enemy': 'Kamish'},
+}
 
-    'F': 0,
-    'D': 1,
-    'C': 3,
-    'B': 4,
-    'A': 10,
-    'S': 15,
+enemies = {
+    'Centipede': {'hp': 10, 'atk': 10,
+                  'img': "https://static.wikia.nocookie.net/solo-leveling/images/e/e8/Centipede1.jpg/revision/latest/scale-to-width-down/350?cb=20210628033630"},
+    'Stone Golem': {'hp': 20, 'atk': 20,
+                    'img': "https://static.wikia.nocookie.net/solo-leveling/images/4/47/StoneGolem1.jpg/revision/latest/scale-to-width-down/350?cb=20210628163114"},
+    'Knight': {'hp': 30, 'atk': 30,
+               'img': "https://static.wikia.nocookie.net/solo-leveling/images/b/bd/Igris13.jpg/revision/latest/scale-to-width-down/350?cb=20210901144428"},
+    'Insect Queen': {'hp': 40, 'atk': 40,
+                     'img': "https://static.wikia.nocookie.net/solo-leveling/images/f/fe/Querehsha1.jpg/revision/latest/scale-to-width-down/350?cb=20210803223313"},
+    'Ant King': {'hp': 50, 'atk': 50,
+                 'img': "https://static.wikia.nocookie.net/solo-leveling/images/9/93/Beru_%28Marshal%29.jpg/revision/latest/scale-to-width-down/343?cb=20210727041130"},
+    'Kamish': {'hp': 60, 'atk': 60,
+               'img': "https://static.wikia.nocookie.net/solo-leveling/images/7/72/Kamish2.jpg/revision/latest/scale-to-width-down/350?cb=20210406203322"},
 }
 
 users = {
@@ -100,33 +114,43 @@ def run_discord_bot():
                     'wins': 0
                 }
 
+            rank = users[username]['rank']
+
+            # Check if the user has reached the required number of wins for their rank
+            if users[username]['wins'] >= ranks[rank]['wins_required']:
+                enemy_name = ranks[rank]['enemy']
+            else:
+                # If the user hasn't reached the required number of wins, they fight their previous enemy
+                enemy_name = enemies[users[username]['previous_enemy']]['name']
+
+            enemy = enemies[enemy_name]
+            enemy_hp = enemy['hp']
+            enemy_atk = enemy['atk']
+            enemy_img = enemy['img']
+            users[username]['previous_enemy'] = enemy_name
+
             player_hp = 100
-            enemy_hp = 10
-            player_attack = 10
-            enemy_attack = 10
+            player_atk = 10
 
             # Store the previous rank before the fight
             previous_rank = users[username]['rank']
 
             # Create an embed to display the fight
             embed = discord.Embed(title="Challenging Dungeon! :crossed_swords:", color=0x00FF9900)
-            embed.add_field(name="Player HP :heart:", value=player_hp, inline=True)
-            embed.add_field(name="Enemy HP :space_invader:", value=enemy_hp, inline=True)
-
-            # add image
-            embed.set_image(
-                url="https://static.wikia.nocookie.net/solo-leveling/images/e/e8/Centipede1.jpg/revision/latest/scale-to-width-down/350?cb=20210628033630")
+            embed.add_field(name=f"{username} HP :heart:", value=player_hp, inline=True)
+            embed.add_field(name=f"{enemy_name} HP :space_invader:", value=enemy_hp, inline=True)
+            embed.set_image(url=enemy_img)
 
             # Send the embed
             fight_message = await message.channel.send(embed=embed)
 
             while True:
                 # player's turn
-                player_damage = random.randint(1, player_attack)
+                player_damage = random.randint(1, player_atk)
                 enemy_hp -= player_damage
 
                 # Update the embed
-                embed.set_field_at(0, name="Enemy HP :space_invader:", value=f"{enemy_hp}/100", inline=False)
+                embed.set_field_at(0, name=f"{enemy_name} HP :space_invader:", value=f"{enemy_hp}/100", inline=False)
                 embed.description = f'You dealt {player_damage} damage to the enemy!'
 
                 await fight_message.edit(embed=embed)
@@ -136,22 +160,20 @@ def run_discord_bot():
                     users[username]['wins'] += 1
 
                     # Check if the user qualifies for a promotion
-                    for rank in sorted(ranks, key=ranks.get, reverse=True):
-                        if users[username]['wins'] >= ranks[rank]:
+                    for rank in sorted(ranks, key=lambda x: ranks[x]['wins_required'], reverse=True):
+                        if users[username]['wins'] >= ranks[rank]['wins_required']:
                             if rank != users[username]['rank']:
                                 users[username]['rank'] = rank
                                 await message.channel.send(
                                     f'Congratulations, {username}! You have been promoted to rank {rank}!')
                             break
-
                     break
-
                 # enemy's turn
-                enemy_damage = random.randint(1, enemy_attack)
+                enemy_damage = random.randint(1, enemy_atk)
                 player_hp -= enemy_damage
 
                 # Update the embed
-                embed.set_field_at(1, name="Player HP :hearts:", value=f"{player_hp}/100", inline=False)
+                embed.set_field_at(1, name=f"{username} HP :heart:", value=f"{player_hp}/100", inline=False)
                 embed.description = f'The enemy dealt {enemy_damage} damage to you!'
                 await fight_message.edit(embed=embed)
 
