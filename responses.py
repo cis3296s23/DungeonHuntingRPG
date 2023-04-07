@@ -18,5 +18,5 @@ def get_response(message) -> str:
         !stat - your current status
         MORE TO COME!!!```"""  # This is a Markdown code block
     
-  
+
     
