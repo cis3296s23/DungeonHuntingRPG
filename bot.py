@@ -5,7 +5,7 @@ import responses
 import shop
 
 CHANNEL_ID = 1075850854126583900
-BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GPGViy.a2V-mnJqjQvlWkLoyUgJ1VTyADwqIVWx_wl8D0'  # remove before committing
+BOT_TOKEN = 'enter token here'  # remove before committing
 
 
 async def send_message(message, user_message, is_private):
