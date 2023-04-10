@@ -13,9 +13,9 @@ def get_response(message) -> str:
     if p_message == '!help':
         return """```Available commands:
         !fight - to begin the battle!
-        !rank - to check your current rank
-        !win - to see how many wins you have
-        !stat - your current status
+        !shop - to buy items!
+        !inventory - to see your inventory!
+        !stat - to see your stats!
         MORE TO COME!!!```"""  # This is a Markdown code block
     
 
