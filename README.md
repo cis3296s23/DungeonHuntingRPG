@@ -6,8 +6,10 @@ interact with the bot with commands to decide what actions they want to take.
  - Download the latest [release](https://github.com/cis3296s23/DungeonHuntingRPG/releases)
  - Open the code in an IDE/terminal and move files into the directory of the project
  - Setup Discord bot as shown in [Technical Information](#technical-information)
- - In bot.py, enter the discord bot token into the section shown below
+ - Right click the channel you want your Discord bot to be in and copy the Channel ID
+ - In bot.py, enter the Discord Bot Token & Channel ID into the section shown below
 ```
+CHANNEL_ID = 
 BOT_TOKEN = 'enter token here'
 ```
 - Install Discord API
