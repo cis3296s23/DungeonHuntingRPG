@@ -5,7 +5,7 @@ import responses
 import shop
 
 CHANNEL_ID = 1075850854126583900
-BOT_TOKEN = 'enter token here'  # remove before committing
+BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GVAmHG.IboRCBu_UmeN7elzVy2tf9eXDfhpBJvGPC-cuE'  # remove before committing
 
 
 async def send_message(message, user_message, is_private):
@@ -48,13 +48,19 @@ users = {
         'rank': 'F',
         'wins': 0,
         'gold': 0,  # gold gained from fighting monsters
-        'inventory': {}  # inventory to store items from shop
+        'inventory': {},  # inventory to store items from shop
+        'weapon_equip': 'No weapons equipped', 
+        'armor_equip': 'No armor equipped',
+        'health': 100
     },
     'user2': {
         'rank': 'F',
         'wins': 0,
         'gold': 0,
-        'inventory': {}
+        'inventory': {},
+        'weapon_equip': 'No weapons equipped', 
+        'armor_equip': 'No armor equipped',
+        'health': 100 
     },
 }
 
@@ -66,6 +72,18 @@ shop_items = {  # shop, displays items and the amount of gold for them
     'medium armor': 50,
     'heavy armor': 100,
     'health potion': 10
+}
+
+weapon_dmg = { #added damage when equipped 
+    'dull sword': 10,
+    'shape sword': 20,
+    'great sword': 40,
+}
+
+armor_health = { #added health when equipped 
+    'light armor': 10,
+    'medium armor': 20,
+    'heavy armor': 40,
 }
 
 
@@ -102,7 +120,10 @@ def run_discord_bot():
                 'rank': 'F',
                 'wins': 0,
                 'gold': 0,
-                'inventory': {}
+                'inventory': {},
+                'weapon_equip': 'No weapons equipped', 
+                'armor_equip': 'No armor equipped',
+                'health': 100 
             }
 
         if user_message[0] == '?':  # If the message starts with a question mark
@@ -116,7 +137,8 @@ def run_discord_bot():
             embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42), title=username + '\'s stats\n',
                                   description=f'Rank: {users[username]["rank"]}\n' +
                                               f'Wins: {users[username]["wins"]}\n' +
-                                              f'Gold: {users[username]["gold"]}\n')
+                                              f'Gold: {users[username]["gold"]}\n'+
+                                              f'Health: {users[username]["health"]}\n')
             await message.channel.send(embed=embed)
 
         if user_message == '!shop':  # opens shop menu
@@ -146,13 +168,37 @@ def run_discord_bot():
 
         if user_message == '!inventory':  # open user's inventory
             if bool(users[username]["inventory"]) != False:  # check if inventory is full
-                in_count = 0
+                await message.channel.send('Weapon equipped: '+ users[username]['weapon_equip']+'.\n')
+                await message.channel.send('Armor equipped: '+ users[username]['armor_equip']+'.\n')
                 for x, y in users[username]["inventory"].items():
-                    await message.channel.send(str(in_count + 1) + ' = ' + x + ' : ' + str(y))
-                    in_count += 1
+                    if x == 'health potion':
+                        await message.channel.send('-'+x + ': ' + str(y))
+                    else:    
+                        await message.channel.send('-'+x)
+                await message.channel.send('Enter the name of the item you want to equip or use.\n')
+
             else:
                 await message.channel.send(
                     'Empty inventory. You can visit the shop to purchase items by using the \'!shop\' command.\n')
+
+        for player_item in shop_items:
+            if user_message == player_item:
+                if player_item in users[username]['inventory']:   #check if in inventory
+                    if ("health potion" in player_item) == True:   #if it is a sword 
+                        if users[username]['inventory']['health potion'] >= 1:
+                            await message.channel.send('Potion used, +10 health.\n')
+                            users[username]['inventory'][player_item] -= 1
+                            users[username]['health'] += 10
+                        else:
+                            await message.channel.send('No potions left in inventory, please visit the shop for more.\n')    
+                    else:    
+                        if ("sword" in player_item) == True:   #if it is a sword 
+                            users[username]['weapon_equip'] = player_item
+                        elif ("armor" in player_item) == True:   #if it is a armor 
+                            users[username]['armor_equip'] = player_item
+                        await message.channel.send(player_item +' equipped!\n')
+    
+
 
         # RPG stuff
         if message.content.startswith('!fight'):
@@ -164,7 +210,10 @@ def run_discord_bot():
                     'rank': 'F',
                     'wins': 0,
                     'gold': 0,
-                    'inventory': {}
+                    'inventory': {},
+                    'weapon_equip': 'No weapons equipped', 
+                    'armor_equip': 'No armor equipped',
+                    'health': 100         
                 }
 
             rank = users[username]['rank']
@@ -182,15 +231,28 @@ def run_discord_bot():
             enemy_img = enemy['img']
             users[username]['previous_enemy'] = enemy_name
 
-            player_hp = 100
+            #player_hp = 100
+            
             player_atk = 10
+
+            for add_dmg in weapon_dmg: #add additional player dmg if weapon is equipped
+                if users[username]['weapon_equip'] == add_dmg:
+                    player_atk += weapon_dmg[add_dmg]
+
+            for add_health in armor_health: #add additional player dmg if weapon is equipped
+                if users[username]['armor_equip'] == add_health:
+                    #player_hp += armor_health[add_health]     
+                    users[username]['health'] += armor_health[add_health]     
+          
+            player_hp = users[username]['health']
+
 
             # Store the previous rank before the fight
             previous_rank = users[username]['rank']
 
             # Create an embed to display the fight
             embed = discord.Embed(title="Challenging Dungeon! :crossed_swords:", color=0x00FF9900)
-            embed.add_field(name=f"{username} HP :heart:", value=player_hp, inline=True)
+            embed.add_field(name=f"{username} HP :heart:", value=users[username]['health'], inline=True)
             embed.add_field(name=f"{enemy_name} HP :space_invader:", value=enemy_hp, inline=True)
             embed.set_image(url=enemy_img)
 
@@ -226,17 +288,17 @@ def run_discord_bot():
                     break
                 # enemy's turn
                 enemy_damage = random.randint(1, enemy_atk)
-                player_hp -= enemy_damage
+                users[username]['health'] -= enemy_damage
                 # to make sure player hp doesn't go below 0
-                player_hp = max(0, player_hp)
+                users[username]['health'] = max(0, users[username]['health'])
 
                 # Update the embed
-                embed.set_field_at(1, name=f"{username} HP :heart:", value=f"{player_hp}/100", inline=False)
+                embed.set_field_at(1, name=f"{username} HP :heart:", value=f"{users[username]['health']}/{player_hp}", inline=False)
                 embed.description = f'The enemy dealt {enemy_damage} damage to you!'
                 await fight_message.edit(embed=embed)
 
-                if player_hp <= 0:
-
+                if users[username]['health'] <= 0:
+                    users[username]['health'] += 60 # add 60hp back after player loses
                     if users[username]['gold'] > 0:
                         await message.channel.send('You lose! 1 Gold loss.')
                         users[username]['gold'] -= 1
