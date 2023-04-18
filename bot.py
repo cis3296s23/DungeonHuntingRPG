@@ -2,6 +2,7 @@
 import random
 import discord
 import shop
+import lb
 
 CHANNEL_ID = 1075850854126583900
 BOT_TOKEN = 'enter token here'  # remove before committing
@@ -205,6 +206,11 @@ def run_discord_bot():
                             users[username]['armor_equip'] = player_item
                         await message.channel.send(player_item + ' equipped!\n')
 
+        # Leaderboard feature
+        if user_message == '!lb':
+            embed = lb.leaderboard(users)
+            await message.channel.send(embed=embed)
+            
         # RPG stuff
         if message.content.startswith('!fight'):
             username = str(message.author)
