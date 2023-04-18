@@ -2,6 +2,8 @@
 Dungeon Hunting RPG is an application that runs as a discord bot that allows users to play a dungeon hunting minigame via discord. The bot sets up 
 enemies for the players to fight, dungeons to explore, checking of current adventure guild rank, displaying their health bars, and more. The players
 interact with the bot with commands to decide what actions they want to take. 
+### Requirements
+ - A bit of experience with python & terminal (i.e. know how to use pip install)
 # How to run
  - Download the latest [release](https://github.com/cis3296s23/DungeonHuntingRPG/releases)
  - Open the code in an IDE/terminal and move files into the directory of the project
