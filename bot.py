@@ -3,6 +3,7 @@ import random
 import discord
 import responses
 import shop
+import lb
 
 CHANNEL_ID = 1075850854126583900
 BOT_TOKEN = 'enter token here'  # remove before committing
@@ -153,6 +154,11 @@ def run_discord_bot():
             else:
                 await message.channel.send(
                     'Empty inventory. You can visit the shop to purchase items by using the \'!shop\' command.\n')
+
+        # Leaderboard feature
+        if user_message == '!lb':
+            embed = lb.leaderboard(users)
+            await message.channel.send(embed=embed)
 
         # RPG stuff
         if message.content.startswith('!fight'):
