@@ -80,14 +80,19 @@ def run_discord_bot():
                                               f'Health: {data.users[username]["health"]}\n'
                                               f'Weapon: {data.users[username]["weapon_equip"]}\n' +
                                               f'Armor: {data.users[username]["armor_equip"]}\n')
-
+            embed.set_thumbnail(
+                url="https://preview.redd.it/zhrpsafn97891.png?width=608&format=png&auto=webp&s=31b67183885b9b4bce3d74f01c95e85f61201cd0")
             await message.channel.send(embed=embed)
 
         if user_message == '!shop':  # opens shop menu
-            await message.channel.send(
-                "Welcome to the shop!\nSwords increase your damage output, armors help reduce enemy damage, and health potions restore your health.\n")
-            await message.channel.send("Please enter the number of the item you wish to purchase.\n")
-            await message.channel.send(shop.shop_message(data.shop_items))  # lists shop items
+            embed = discord.Embed(title="Welcome to the shop!",
+                                  description="Swords increase your damage output, armors help reduce enemy damage, and health potions restore your health.",
+                                  color=0x3D85C6)
+            embed.add_field(name="Shop Items", value=shop.shop_message(data.shop_items), inline=False)
+            embed.set_thumbnail(
+                url="https://static.wikia.nocookie.net/solo-leveling/images/9/95/System1.jpg/revision/latest?cb=20210625162338")
+            embed.set_footer(text="Enter the number of the item you want to buy.")
+            await message.channel.send(embed=embed)
 
         # Buy and store item into player's inventory
         if user_message == '1' or user_message == '2' or user_message == '3' or user_message == '4' or user_message == '5' or user_message == '6' or user_message == '7':
@@ -109,15 +114,28 @@ def run_discord_bot():
                 await message.channel.send('Not enought gold!\n')
 
         if user_message == '!inventory':  # open user's inventory
-            if bool(data.users[username]["inventory"]) != False:  # check if inventory is full
-                await message.channel.send('Weapon equipped: ' + data.users[username]['weapon_equip'] + '.\n')
-                await message.channel.send('Armor equipped: ' + data.users[username]['armor_equip'] + '.\n')
-                for x, y in data.users[username]["inventory"].items():
-                    if x == 'health potion':
-                        await message.channel.send('-' + x + ': ' + str(y))
+            inventory = data.users[username]["inventory"]
+            weapon_equip = data.users[username]['weapon_equip']
+            armor_equip = data.users[username]['armor_equip']
+
+            if bool(inventory) != False:  # check if inventory is full
+                embed = discord.Embed(title="Inventory")
+                embed.add_field(name="Weapon equipped", value=weapon_equip)
+                embed.add_field(name="Armor equipped", value=armor_equip)
+                # embed.add_field(name="\u200b", value="\u200b", inline=False)
+                embed.add_field(name="Items", value="\n", inline=False)
+                embed.set_thumbnail(
+                    url="https://static.wikia.nocookie.net/solo-leveling/images/0/01/SystemInventory1.jpg/revision/latest?cb=20210625162158")
+
+                for item, count in inventory.items():
+                    if item == 'health potion':
+
+                        embed.add_field(name=item, value=f"- {count}")
                     else:
-                        await message.channel.send('-' + x)
-                await message.channel.send('Enter the name of the item you want to equip or use.\n')
+                        embed.add_field(name=item, value=f"")
+
+                embed.set_footer(text="Enter the name of the item you want to equip or use.")
+                await message.channel.send(embed=embed)
 
             else:
                 await message.channel.send(
@@ -145,7 +163,7 @@ def run_discord_bot():
         if user_message == '!lb':
             embed = lb.leaderboard(data.users)
             await message.channel.send(embed=embed)
-            
+
         # RPG stuff
         if message.content.startswith('!fight'):
             username = str(message.author)
@@ -238,7 +256,8 @@ def run_discord_bot():
                 data.users[username]['health'] = max(0, data.users[username]['health'])
 
                 # Update the embed
-                embed.set_field_at(1, name=f"{username} HP :heart:", value=f"{data.users[username]['health']}/{player_hp}",
+                embed.set_field_at(1, name=f"{username} HP :heart:",
+                                   value=f"{data.users[username]['health']}/{player_hp}",
                                    inline=False)
                 embed.description = f'The enemy dealt {enemy_damage} damage to you!'
                 await fight_message.edit(embed=embed)
