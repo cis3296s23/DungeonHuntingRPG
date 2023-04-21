@@ -45,22 +45,22 @@ users = {
 
 shop_items = {  # shop, displays items and the amount of gold for them
     'dull sword': 10,
-    'shape sword': 40,
-    'great sword': 100,
-    'light armor': 20,
-    'medium armor': 50,
-    'heavy armor': 100,
-    'health potion': 10
+    'shape sword': 20,
+    'great sword': 30,
+    'light armor': 10,
+    'medium armor':20,
+    'heavy armor': 30,
+    'health potion': 5
 }
 
 weapon_dmg = {  # added damage when equipped
     'dull sword': 10,
     'shape sword': 20,
-    'great sword': 40,
+    'great sword': 30,
 }
 
 armor_health = {  # added health when equipped
     'light armor': 10,
     'medium armor': 20,
-    'heavy armor': 40,
+    'heavy armor': 30,
 }
