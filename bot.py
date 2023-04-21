@@ -59,7 +59,34 @@ def run_discord_bot():
                 'health': 100
             }
 
-        if key.get_key() == 0: #if player is not locked in shop
+
+        if key.get_key() == 1: # player is locked in the shop
+                # Buy and store item into player's inventory
+                if user_message == '1' or user_message == '2' or user_message == '3' or user_message == '4' or user_message == '5' or user_message == '6' or user_message == '7':
+
+                    temp = user_message
+                    num = int(temp) - 1
+                    item = list(data.shop_items)
+
+                    if data.users[username]["gold"] >= data.shop_items[item[num]]:  # checks if player have enough gold
+                        if item[num] not in data.users[username]['inventory']:
+                            data.users[username]['inventory'][item[num]] = 1  # add shop item into player inventory
+                        else:
+                            data.users[username]['inventory'][item[num]] += 1
+
+                        data.users[username]["gold"] -= data.shop_items[item[num]]  # take gold from player
+
+                        await message.channel.send(item[num] + ' obtained!\n')
+                    else:
+                        await message.channel.send('Not enought gold!\n')
+                    
+                elif user_message == '!quit':
+                    await message.channel.send('Leaving shop......')
+                    key.set_key(0) 
+                else:
+                    await message.channel.send('Invalid input. Please enter the number of the item you want to purchase,\n')
+                    await message.channel.send('or enter \'!quit\' to leave the shop.\n')
+        elif key.get_key() == 0: #if player is not locked in shop
             # Check help command
             if user_message == '!help':
                 embed = discord.Embed(title="Bot Commands", description="List of commands", color=0x3D85C6)
@@ -94,7 +121,7 @@ def run_discord_bot():
                     embed.add_field(name="Shop Items", value=shop.shop_message(data.shop_items), inline=False)
                     embed.set_thumbnail(
                         url="https://static.wikia.nocookie.net/solo-leveling/images/9/95/System1.jpg/revision/latest?cb=20210625162338")
-                    #embed.set_footer(text="Enter the number of the item you want to buy or \'!quit\' to leave the shop.")
+                    embed.set_footer(text="Enter the number of the item you want to buy or \'!quit\' to leave the shop.")
                     await message.channel.send(embed=embed)
                     key.set_key(1) #lock players into the shop
                     
@@ -260,32 +287,7 @@ def run_discord_bot():
 
                 # Update the previous rank for the user
                 data.users[username]['previous_rank'] = previous_rank
-        else: # player is locked in the shop
-                # Buy and store item into player's inventory
-                if user_message == '1' or user_message == '2' or user_message == '3' or user_message == '4' or user_message == '5' or user_message == '6' or user_message == '7':
-
-                    temp = user_message
-                    num = int(temp) - 1
-                    item = list(data.shop_items)
-
-                    if data.users[username]["gold"] >= data.shop_items[item[num]]:  # checks if player have enough gold
-                        if item[num] not in data.users[username]['inventory']:
-                            data.users[username]['inventory'][item[num]] = 1  # add shop item into player inventory
-                        else:
-                            data.users[username]['inventory'][item[num]] += 1
-
-                        data.users[username]["gold"] -= data.shop_items[item[num]]  # take gold from player
-
-                        await message.channel.send(item[num] + ' obtained!\n')
-                    else:
-                        await message.channel.send('Not enought gold!\n')
-                    
-                elif user_message == '!quit':
-                    await message.channel.send('Leaving shop......')
-                    key.set_key(0) 
-                else:
-                    await message.channel.send('Please enter the number of the item you want to purchase,\n')
-                    await message.channel.send('or enter \'!quit\' to leave the shop.\n')
+        
 
 
 
