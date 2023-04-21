@@ -84,7 +84,7 @@ def run_discord_bot():
                     await message.channel.send('Leaving shop......')
                     key.set_key(0) 
                 else:
-                    await message.channel.send('Invalid input. Please enter the number of the item you want to purchase,\n')
+                    await message.channel.send('Still in shop! Please enter the number of the item you want to purchase,\n')
                     await message.channel.send('or enter \'!quit\' to leave the shop.\n')
         elif key.get_key() == 0: #if player is not locked in shop
             # Check help command
@@ -125,7 +125,6 @@ def run_discord_bot():
                     await message.channel.send(embed=embed)
                     key.set_key(1) #lock players into the shop
                     
-
 
             if user_message == '!inventory':  # open user's inventory
                 inventory = data.users[username]["inventory"]
