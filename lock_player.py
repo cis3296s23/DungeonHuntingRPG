@@ -3,7 +3,6 @@
 
 class lock_players:
         
-    #player_lock = 0 # 0 means that key is not in use 
 
     def __init__(self):
         self.player_lock =0

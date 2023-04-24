@@ -278,8 +278,10 @@ def run_discord_bot():
                     if data.users[username]['health'] <= 0:
                         data.users[username]['health'] += 60  # add 60hp back after player loses
                         if data.users[username]['gold'] > 0:
-                            await message.channel.send('You lose! 10 Gold loss.')
-                            data.users[username]['gold'] -= 10
+                            await message.channel.send('You lose!')
+                            if data.users[username]['gold'] >= 10:
+                                await message.channel.send('5 Gold loss.')    
+                                data.users[username]['gold'] -= 5
                         else:
                             await message.channel.send('You lose!')
                         break
