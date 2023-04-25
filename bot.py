@@ -4,11 +4,10 @@ import discord
 import shop
 import lb
 import data
-from lock_player import  lock_players
+from lock_player import LockPlayers
 
 CHANNEL_ID = 1075850854126583900
-BOT_TOKEN = 'MTA3NTg0NjQ5MTE4MjIyMzQ5MA.GCIWLc.jLIinYcN1vuWG-zt4iN5IVuiYv7DQBzhtIyhpQ'  # remove before committing
-
+BOT_TOKEN = 'enter token here'  # remove before committing
 
 welcome_message = 'Welcome to the Dungeon Hunting RPG! The Dungeon Hunting RPG sets up enemies for the players to ' \
                   'fight, dungeons to explore, checking of current adventure guild rank, displaying their health ' \
@@ -16,9 +15,14 @@ welcome_message = 'Welcome to the Dungeon Hunting RPG! The Dungeon Hunting RPG s
                   'to take.\n'
 welcome_message2 = 'To start your adventure, enter \'**!fight**\'.\nEnter \'**!help**\' for the list of actions you can take.\n'
 
-key = lock_players() # create a key
+key = LockPlayers()  # create a key
+
 
 def run_discord_bot():
+    """
+    Run the Discord bot
+    :return: None
+    """
     TOKEN = BOT_TOKEN
     intents = discord.Intents.default()
     intents.message_content = True
@@ -26,6 +30,10 @@ def run_discord_bot():
 
     @client.event
     async def on_ready():
+        """
+        When the bot is ready, print a message to the console
+        :return: None
+        """
         print(f'{client.user} has connected to Discord!')
         channel = client.get_channel(CHANNEL_ID)
         # send welcome message as embed
@@ -38,7 +46,11 @@ def run_discord_bot():
 
     @client.event
     async def on_message(message):
-
+        """
+        Handles the messages sent by the user
+        :param message: the message sent by the user
+        :return: None
+        """
         if message.author == client.user:
             return
 
@@ -59,34 +71,33 @@ def run_discord_bot():
                 'health': 100
             }
 
+        if key.get_key() == 1:  # player is locked in the shop
+            # Buy and store item into player's inventory
+            if user_message == '1' or user_message == '2' or user_message == '3' or user_message == '4' or user_message == '5' or user_message == '6' or user_message == '7':
 
-        if key.get_key() == 1: # player is locked in the shop
-                # Buy and store item into player's inventory
-                if user_message == '1' or user_message == '2' or user_message == '3' or user_message == '4' or user_message == '5' or user_message == '6' or user_message == '7':
+                temp = user_message
+                num = int(temp) - 1
+                item = list(data.shop_items)
 
-                    temp = user_message
-                    num = int(temp) - 1
-                    item = list(data.shop_items)
-
-                    if data.users[username]["gold"] >= data.shop_items[item[num]]:  # checks if player have enough gold
-                        if item[num] not in data.users[username]['inventory']:
-                            data.users[username]['inventory'][item[num]] = 1  # add shop item into player inventory
-                        else:
-                            data.users[username]['inventory'][item[num]] += 1
-
-                        data.users[username]["gold"] -= data.shop_items[item[num]]  # take gold from player
-
-                        await message.channel.send(item[num] + ' obtained!\n')
+                if data.users[username]["gold"] >= data.shop_items[item[num]]:  # checks if player have enough gold
+                    if item[num] not in data.users[username]['inventory']:
+                        data.users[username]['inventory'][item[num]] = 1  # add shop item into player inventory
                     else:
-                        await message.channel.send('Not enought gold!\n')
-                    
-                elif user_message == '!quit':
-                    await message.channel.send('Leaving shop......')
-                    key.set_key(0) 
+                        data.users[username]['inventory'][item[num]] += 1
+
+                    data.users[username]["gold"] -= data.shop_items[item[num]]  # take gold from player
+
+                    await message.channel.send(item[num] + ' obtained!\n')
                 else:
-                    await message.channel.send('Still in shop! Please enter the number of the item you want to purchase,\n')
-                    await message.channel.send('or enter \'!quit\' to leave the shop.\n')
-        elif key.get_key() == 0: #if player is not locked in shop
+                    await message.channel.send('Not enought gold!\n')
+
+            elif user_message == '!quit':
+                await message.channel.send('Leaving shop......')
+                key.set_key(0)
+            else:
+                await message.channel.send('Still in shop! Please enter the number of the item you want to purchase,\n')
+                await message.channel.send('or enter \'!quit\' to leave the shop.\n')
+        elif key.get_key() == 0:  # if player is not locked in shop
             # Check help command
             if user_message == '!help':
                 embed = discord.Embed(title="Bot Commands", description="List of commands", color=0x3D85C6)
@@ -104,27 +115,26 @@ def run_discord_bot():
             # Check stats
             if user_message == '!stat':
                 embed = discord.Embed(colour=discord.Color.from_rgb(247, 38, 42), title=username + '\'s stats\n',
-                                    description=f'Rank: {data.users[username]["rank"]}\n' +
-                                                f'Wins: {data.users[username]["wins"]}\n' +
-                                                f'Gold: {data.users[username]["gold"]}\n' +
-                                                f'Health: {data.users[username]["health"]}\n'
-                                                f'Weapon: {data.users[username]["weapon_equip"]}\n' +
-                                                f'Armor: {data.users[username]["armor_equip"]}\n')
+                                      description=f'Rank: {data.users[username]["rank"]}\n' +
+                                                  f'Wins: {data.users[username]["wins"]}\n' +
+                                                  f'Gold: {data.users[username]["gold"]}\n' +
+                                                  f'Health: {data.users[username]["health"]}\n'
+                                                  f'Weapon: {data.users[username]["weapon_equip"]}\n' +
+                                                  f'Armor: {data.users[username]["armor_equip"]}\n')
                 embed.set_thumbnail(
                     url="https://preview.redd.it/zhrpsafn97891.png?width=608&format=png&auto=webp&s=31b67183885b9b4bce3d74f01c95e85f61201cd0")
                 await message.channel.send(embed=embed)
 
-            if user_message == '!shop': #lock players in shop
-                    embed = discord.Embed(title="Welcome to the shop!",
-                                        description="Swords increase your damage output, armors help reduce enemy damage, and health potions restore your health.",
-                                        color=0x3D85C6)
-                    embed.add_field(name="Shop Items", value=shop.shop_message(data.shop_items), inline=False)
-                    embed.set_thumbnail(
-                        url="https://static.wikia.nocookie.net/solo-leveling/images/9/95/System1.jpg/revision/latest?cb=20210625162338")
-                    embed.set_footer(text="Enter the number of the item you want to buy or \'!quit\' to leave the shop.")
-                    await message.channel.send(embed=embed)
-                    key.set_key(1) #lock players into the shop
-                    
+            if user_message == '!shop':  # lock players in shop
+                embed = discord.Embed(title="Welcome to the shop!",
+                                      description="Swords increase your damage output, armors help reduce enemy damage, and health potions restore your health.",
+                                      color=0x3D85C6)
+                embed.add_field(name="Shop Items", value=shop.shop_message(data.shop_items), inline=False)
+                embed.set_thumbnail(
+                    url="https://static.wikia.nocookie.net/solo-leveling/images/9/95/System1.jpg/revision/latest?cb=20210625162338")
+                embed.set_footer(text="Enter the number of the item you want to buy or \'!quit\' to leave the shop.")
+                await message.channel.send(embed=embed)
+                key.set_key(1)  # lock players into the shop
 
             if user_message == '!inventory':  # open user's inventory
                 inventory = data.users[username]["inventory"]
@@ -243,7 +253,8 @@ def run_discord_bot():
                     enemy_hp = max(0, enemy_hp)
 
                     # Update the embed
-                    embed.set_field_at(0, name=f"{enemy_name} HP :space_invader:", value=f"{enemy_hp}/100", inline=False)
+                    embed.set_field_at(0, name=f"{enemy_name} HP :space_invader:", value=f"{enemy_hp}/100",
+                                       inline=False)
                     embed.description = f'You dealt {player_damage} damage to the enemy!'
 
                     await fight_message.edit(embed=embed)
@@ -270,8 +281,8 @@ def run_discord_bot():
 
                     # Update the embed
                     embed.set_field_at(1, name=f"{username} HP :heart:",
-                                    value=f"{data.users[username]['health']}/{player_hp}",
-                                    inline=False)
+                                       value=f"{data.users[username]['health']}/{player_hp}",
+                                       inline=False)
                     embed.description = f'The enemy dealt {enemy_damage} damage to you!'
                     await fight_message.edit(embed=embed)
 
@@ -280,7 +291,7 @@ def run_discord_bot():
                         if data.users[username]['gold'] > 0:
                             await message.channel.send('You lose!')
                             if data.users[username]['gold'] >= 10:
-                                await message.channel.send('5 Gold loss.')    
+                                await message.channel.send('5 Gold loss.')
                                 data.users[username]['gold'] -= 5
                         else:
                             await message.channel.send('You lose!')
@@ -288,8 +299,5 @@ def run_discord_bot():
 
                 # Update the previous rank for the user
                 data.users[username]['previous_rank'] = previous_rank
-        
-
-
 
     client.run(TOKEN)

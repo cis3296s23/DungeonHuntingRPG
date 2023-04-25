@@ -23,6 +23,11 @@ users = {
 
 
 def leaderboard(dic):
+    """
+    Returns an embed of the leaderboard
+    :param dic: a dictionary of users
+    :return: embeds of the leaderboard
+    """
     s = []
     a = []
     b = []
@@ -59,6 +64,11 @@ def leaderboard(dic):
 
 
 def quick_sort(sequence):
+    """
+    Sorts a list of dictionaries by the value of the dictionary
+    :param sequence: a list of dictionaries
+    :return: a sorted list of dictionaries
+    """
     length = len(sequence)
     if length <= 1:
         return sequence
@@ -78,6 +88,11 @@ def quick_sort(sequence):
 
 
 def list_to_string(items):
+    """
+    Returns a string of the top 5 users from each rank
+    :param items: a list of dictionaries
+    :return: a string of the top 5 users from each rank
+    """
     rank = ""
     new = quick_sort(items)
     for index, info in enumerate(new):
