@@ -31,16 +31,7 @@ users = {
         'weapon_equip': 'No weapons equipped',
         'armor_equip': 'No armor equipped',
         'health': 100
-    },
-    'user2': {
-        'rank': 'F',
-        'wins': 0,
-        'gold': 0,
-        'inventory': {},
-        'weapon_equip': 'No weapons equipped',
-        'armor_equip': 'No armor equipped',
-        'health': 100
-    },
+    }
 }
 
 shop_items = {  # shop, displays items and the amount of gold for them
